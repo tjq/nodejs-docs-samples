@@ -21,7 +21,7 @@ const Compute = require('@google-cloud/compute');
 
 // Creates a client
 const compute = new Compute({
-  keyFilename: './src/server/credentials.json'
+  keyFilename: 'credentials.json'
 });
 
 const app = express();
