@@ -17,12 +17,38 @@
 
 // [START app]
 const express = require('express');
+const Compute = require('@google-cloud/compute');
+
+// Creates a client
+const compute = new Compute({
+  keyFilename: './src/server/credentials.json'
+});
 
 const app = express();
 
 app.get('/', (req, res) => {
-  res.status(200).send('Hello, world!').end();
+  res.status(200).send('Proxy API.').end();
 });
+
+app.post('/createInstance', function(req, res, next) {
+  let data = req.body
+  let product = data.line_items[0].variant_title.split('/')
+  let instanceZone = product[0].trim() === 'US' ? 'us-east1-b' : 
+                     product[0].trim() === 'EU' ? 'europe-west1-b' : 'asia-east1-b'
+
+  const zone = compute.zone(instanceZone);
+  
+  const name = `proxy-${testJson.checkout_token}`
+
+  zone.createVM(name, {os: 'ubuntu'}, data => {
+    console.log(data)
+
+  }).then(() => {
+    res.send("Success!")
+  }).catch(err => {
+    console.error('ERROR:', err);
+  });
+})
 
 // Start the server
 const PORT = process.env.PORT || 8080;
